@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahesh K - Information Architect | Digital Innovator</title>
+    <meta name="description" content="Mahesh K's portfolio: Pioneering data-driven solutions and immersive 3D web experiences. Nagarjuna College of Engineering.">
+    <meta name="author" content="Mahesh K">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Include Three.js library from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.159.0/three.min.js"></script>
+
+    <style>
+        :root {
+            --background-color: #05080D; /* Even darker, almost black blue */
+            --text-color: #D5D8E0;
+            --accent-color: #00F0FF; /* Electric Cyan */
+            --secondary-accent-color: #A070FF; /* Vibrant Purple */
+            --tertiary-accent-color: #FF40A0; /* Neon Pink for subtle highlights */
+            --border-color: #1A1F2B;
+            --card-background: rgba(10, 15, 25, 0.6);
+            --card-border: rgba(40, 50, 70, 0.5);
+            --link-color: var(--accent-color);
+            --link-hover-color: var(--secondary-accent-color);
+            --hover-border-color: var(--accent-color);
+            --animation-duration: 1s;
+            --animation-delay: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+             scroll-behavior: smooth;
+             overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--link-hover-color);
+            text-decoration: none; /* Keep underline off for cleaner look */
+             transform: translateY(-2px); /* Subtle lift on hover */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif; /* More futuristic/techy font for headings */
+            color: var(--secondary-accent-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+             letter-spacing: 1px;
+        }
+
+        h1 { /* For the main name in hero */
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            margin-bottom: 0.5rem;
+            color: #FFFFFF; /* Pure white for max contrast */
+             font-weight: 900; /* Bolder */
+             text-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-color);
+             line-height: 1.1;
+        }
+
+        h2 { /* Section Titles */
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            margin-bottom: 2.5rem; /* More space below title */
+            text-align: center;
+            position: relative;
+            color: var(--text-color);
+             font-weight: 700;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), var(--secondary-accent-color), transparent);
+            margin: 20px auto 0;
+            border-radius: 3px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 300; /* Lighter weight for body text */
+        }
+
+        ul { list-style: none; padding: 0; margin-bottom: 1.5rem; }
+        li { margin-bottom: 0.8rem; }
+
+        /* THREE.JS Canvas Background */
+        #bg {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1; display: block;
+        }
+
+        /* Main Content Container */
+        #content { position: relative; z-index: 1; }
+
+        /* Sections */
+        section {
+            padding: 120px 25px; /* Increased padding */
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #hero {
+             min-height: 100vh;
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             text-align: center;
+             padding: 0 20px;
+             background: radial-gradient(ellipse at center, rgba(10, 15, 25, 0.5) 0%, transparent 70%); /* Subtle radial gradient behind hero text */
+        }
+
+        .hero-subtitle {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 400;
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            color: var(--text-color);
+            opacity: 0.85;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+             letter-spacing: 0.5px;
+        }
+        .hero-tagline {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            color: var(--accent-color);
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+
+        /* Section animations */
+        .section-hidden {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity var(--animation-duration) cubic-bezier(0.165, 0.84, 0.44, 1), transform var(--animation-duration) cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .section-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Specific Styles Refinements */
+        #about p {
+            font-size: 1.1rem;
+            max-width: 850px;
+            margin: 0 auto 1.5rem auto;
+            text-align: justify; /* Justified text for a more formal block look */
+            text-justify: inter-word;
+            color: var(--text-color);
+             font-weight: 400;
+        }
+
+        #skills .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        #skills .skill-category {
+            background: var(--card-background);
+            border: 1px solid var(--card-border);
+            padding: 25px;
+            border-radius: 10px; /* More rounded corners */
+            backdrop-filter: blur(8px);
+             transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+         #skills .skill-category:hover {
+             border-color: var(--hover-border-color);
+             transform: translateY(-6px) scale(1.02); /* Lift and slight scale */
+             box-shadow: 0 8px 25px rgba(0, 240, 255, 0.15); /* Accent color shadow */
+         }
+
+        #skills .skill-category h3 {
+            color: var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 1.2rem;
+            font-size: 1.4rem;
+            text-align: left;
+             border-bottom: 1px solid var(--border-color);
+             padding-bottom: 10px;
+        }
+
+         #skills .skill-category ul {
+            list-style: none; padding-left: 0; color: var(--text-color);
+         }
+         #skills .skill-category li {
+            margin-bottom: 0.9rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            padding-left: 20px;
+            position: relative;
+         }
+         #skills .skill-category li::before {
+             content: '»'; /* Different custom bullet */
+             color: var(--secondary-accent-color);
+             position: absolute; left: 0; top: -1px;
+             font-weight: bold;
+             font-size: 1.1em;
+         }
+
+
+         #projects .project-list .project-item {
+             border: 1px solid var(--card-border);
+             padding: 30px;
+             margin-bottom: 35px;
+             border-radius: 10px;
+             background-color: var(--card-background);
+             backdrop-filter: blur(8px);
+             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+             box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+         }
+
+         #projects .project-list .project-item:hover {
+             transform: translateY(-8px) scale(1.01);
+             border-color: var(--hover-border-color);
+             box-shadow: 0 10px 30px rgba(var(--tertiary-accent-color), 0.1);
+         }
+
+         #projects .project-list .project-item h3 {
+             color: var(--secondary-accent-color);
+             margin-top: 0; margin-bottom: 12px;
+             font-size: 1.6rem;
+         }
+         #projects .project-list .project-item p {
+             margin-bottom: 18px;
+             font-size: 1rem;
+             color: #C8CBE0;
+             font-weight: 300;
+         }
+         #projects .project-list .project-item .project-links a {
+             margin-right: 20px;
+             font-family: 'Roboto Mono', monospace;
+             font-size: 0.9rem;
+             padding: 6px 12px;
+             border: 1px solid var(--border-color);
+             border-radius: 5px;
+             transition: all 0.3s ease;
+         }
+          #projects .project-list .project-item .project-links a:hover {
+              background-color: rgba(var(--accent-color-rgb, 0, 240, 255), 0.1); /* Use RGB for opacity */
+              border-color: var(--accent-color);
+              color: var(--accent-color);
+              transform: translateY(-2px);
+          }
+
+
+         #education ul { list-style: none; padding-left: 0; max-width: 800px; margin: 0 auto 1.5rem auto; color: var(--text-color); }
+         #education li {
+            margin-bottom: 1.5rem; line-height: 1.6;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--card-background);
+            backdrop-filter: blur(5px);
+         }
+         #education li strong {
+            color: var(--secondary-accent-color); font-weight: 700;
+            display: block; margin-bottom: 8px; font-size: 1.2rem;
+         }
+         #education .edu-details {
+             font-size: 1rem;
+             color: #C0C8E0;
+             margin-bottom: 10px;
+         }
+         #education .course-list {
+             font-size: 0.9rem; color: #A8B0D0;
+             margin-top: 10px; font-family: 'Roboto Mono', monospace;
+             white-space: pre-wrap; line-height: 1.5;
+         }
+
+
+        #contact .contact-links {
+            display: flex; justify-content: center; gap: 30px;
+            flex-wrap: wrap; margin-top: 30px;
+        }
+        #contact .contact-links a {
+            display: inline-flex; align-items: center;
+            font-size: 1.2rem; font-family: 'Roboto Mono', monospace;
+             padding: 12px 25px;
+             border: 1px solid var(--border-color);
+             border-radius: 50px; /* Pill shape buttons */
+             transition: all 0.3s ease;
+        }
+         #contact .contact-links a:hover {
+             border-color: var(--accent-color);
+             background-color: rgba(var(--accent-color-rgb, 0, 240, 255), 0.15);
+             color: var(--accent-color);
+             text-decoration: none;
+             transform: translateY(-3px) scale(1.05);
+             box-shadow: 0 5px 15px rgba(var(--accent-color-rgb, 0, 240, 255), 0.2);
+         }
+
+
+         /* Custom Cursor Style */
+        .cursor-dot {
+            position: fixed;
+            width: 8px; height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            pointer-events: none; z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
+             mix-blend-mode: normal; /* Revert to normal for better visibility of dot */
+        }
+        .cursor-outline {
+            position: fixed;
+            width: 30px; height: 30px;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, width 0.3s ease-out, height 0.3s ease-out, border-color 0.3s ease, opacity 0.3s ease;
+             opacity: 0.7;
+        }
+
+         a:hover ~ .cursor-dot,
+         .project-item:hover ~ .cursor-dot,
+         .skill-category:hover ~ .cursor-dot,
+         #contact .contact-links a:hover ~ .cursor-dot {
+             width: 10px; height: 10px;
+             background-color: var(--secondary-accent-color);
+         }
+         a:hover ~ .cursor-outline,
+         .project-item:hover ~ .cursor-outline,
+         .skill-category:hover ~ .cursor-outline,
+         #contact .contact-links a:hover ~ .cursor-outline {
+             width: 45px; height: 45px;
+             border-color: var(--secondary-accent-color);
+             opacity: 1;
+         }
+
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 50px 20px; margin-top: 60px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.95rem; color: #9098A8;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: clamp(2.8rem, 12vw, 5rem); }
+            h2 { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+            section { padding: 80px 15px; }
+             .hero-subtitle { font-size: clamp(1.1rem, 3.5vw, 1.6rem); }
+             .hero-tagline { font-size: clamp(0.9rem, 2.5vw, 1.2rem); }
+
+             #skills .skills-grid { grid-template-columns: 1fr; gap: 20px; } /* Single column for skills on mobile */
+             #projects .project-list .project-item { padding: 25px; }
+             #contact .contact-links { gap: 20px; }
+             #contact .contact-links a { padding: 10px 20px; font-size: 1.1rem; }
+
+             .cursor-dot, .cursor-outline { display: none; } /* Optionally hide custom cursor on mobile */
+             body { cursor: auto; } /* Restore default cursor on mobile */
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="bg"></canvas>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="content">
+
+        <section id="hero" class="section-hidden">
+            <h1>Mahesh K</h1>
+            <p class="hero-subtitle">Information Architect & Digital Innovator</p>
+            <p class="hero-tagline">Crafting Data-Driven Experiences with Immersive 3D Visuals</p>
+        </section>
+
+        <section id="about" class="section-hidden">
+            <h2>Genesis_</h2>
+            <p>
+                I am Mahesh K, a dedicated 3rd-year Bachelor of Engineering student in Information Science at Nagarjuna College of Engineering (Batch of 2022-2026). My academic journey is anchored in a deep understanding of data structures, algorithmic design, database architectures, and the core tenets of software engineering. I approach technology not just as a tool, but as a canvas for innovation.
+            </p>
+            <p>
+                 Driven by a relentless curiosity, I explore the symbiotic relationship between complex data systems and compelling user interfaces. My passion lies in transforming raw information into insightful, interactive, and visually stunning digital narratives. This pursuit has naturally led me to the frontiers of web-based 3D graphics, using technologies like Three.js to build experiences that captivate and inform.
+            </p>
+             <p>
+                 I am committed to continuous learning and practical application, consistently seeking challenges that push my technical and creative boundaries. My goal is to contribute to projects that are not only technologically advanced but also meaningful and impactful.
+            </p>
+        </section>
+
+        <section id="skills" class="section-hidden">
+            <h2>Skill_Matrix_</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Core Languages</h3>
+                    <ul>
+                        <li>Python (Data Science, Backend, Automation)</li>
+                        <li>Java (Enterprise Solutions, Android Basics)</li>
+                        <li>JavaScript (ESNext, Full-Stack Dev)</li>
+                        <li>C++ (High-Performance, DSA)</li>
+                        <li>SQL (Advanced Queries, DB Management)</li>
+                        <li>TypeScript (Scalable JS Applications)</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Web Ecosystem</h3>
+                    <ul>
+                        <li>HTML5, CSS3 (SASS/LESS)</li>
+                        <li>React.js, Next.js (SSR/SSG)</li>
+                        <li>Node.js, Express.js (APIs)</li>
+                        <li>GraphQL (Data Fetching)</li>
+                        <li>Webpack, Vite (Build Tools)</li>
+                        <li>WebSockets (Real-time Comms)</li>
+                    </ul>
+                </div>
+                 <div class="skill-category">
+                    <h3>Data & Infrastructure</h3>
+                    <ul>
+                        <li>Advanced Data Structures & Algorithms</li>
+                        <li>Database Design (SQL & NoSQL - MongoDB, PostgreSQL)</li>
+                        <li>Data Visualization (D3.js, Chart.js)</li>
+                        <li>Cloud Platforms (AWS EC2, S3 - Basics)</li>
+                        <li>Docker & Containerization (Intro)</li>
+                        <li>CI/CD Concepts (GitHub Actions)</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Emerging & Creative Tech</h3>
+                    <ul>
+                        <li>Three.js (WebGL, 3D Web Graphics)</li>
+                        <li>Blender (3D Modeling Basics)</li>
+                        <li>UI/UX Design Principles</li>
+                        <li>AR/VR Concepts (Interest)</li>
+                        <li>Generative Art (p5.js Basics)</li>
+                        <li>Agile & Scrum Methodologies</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section-hidden">
+            <h2>Project_Nexus_</h2>
+            <div class="project-list">
+                <div class="project-item">
+                    <h3>AstraViz: Celestial Data Explorer</h3>
+                    <p>An interactive 3D web application built with Three.js and React, visualizing real-time astronomical data (e.g., satellite positions, exoplanet orbits). Features dynamic filtering, celestial body information pop-ups, and user-controlled camera navigation through a simulated solar system snippet.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Live Demo</a>
+                        <a href="#" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                 <div class="project-item">
+                    <h3>QuantumLeap API: Scalable Microservice</h3>
+                    <p>A robust backend microservice developed using Node.js, TypeScript, and GraphQL, providing a foundation for a hypothetical quantum computing simulation platform. Implemented JWT authentication, rate limiting, and integrated with PostgreSQL for persistent data storage. Focus on clean architecture and test-driven development.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">API Docs</a>
+                        <a href="#" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                 <div class="project-item">
+                    <h3>NeuralNet Visualizer (Python & Web)</h3>
+                    <p>A Python-based tool with a Flask/React frontend to visualize the structure and activation patterns of simple neural networks. Allows users to define network layers and observe data flow during mock training epochs. Demonstrates understanding of ML concepts and data presentation.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Explore</a>
+                        <a href="#" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="project-item">
+                    <h3>CodeStream: Collaborative IDE (Concept)</h3>
+                    <p>A conceptual design and prototype for a real-time collaborative code editor leveraging WebSockets and a CRDT-like approach for conflict resolution. UI mocked up in Figma, with a basic proof-of-concept backend for shared document editing. Explores distributed systems challenges.</p>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Figma Design</a>
+                        <a href="#" target="_blank">POC Repo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="section-hidden">
+            <h2>Academic_Log_</h2>
+            <ul>
+                <li>
+                    <strong>Nagarjuna College of Engineering & Technology</strong>
+                    <div class="edu-details">
+                        Bachelor of Engineering (BE) in Information Science
+                        <br>
+                        CGPA: 8.9 / 10.0 (Until 3rd Year)
+                        <br>
+                        Expected Graduation: May 2026 (Bengaluru, India)
+                    </div>
+                    <div class="course-list">
+                        Key Courses: Advanced Data Structures, Algorithm Design & Analysis, Database Engineering,
+                        Operating Systems Internals, Computer Networks & Security, Software Architecture,
+                        Web Technologies & Frameworks, Machine Learning Fundamentals, Cloud Computing Paradigms.
+                    </div>
+                </li>
+                 <li>
+                    <strong>[Your Previous College/School Name], [City]</strong>
+                     <div class="edu-details">
+                         Pre-University Course (PUC) / Class XII (Science Stream)
+                         <br>
+                         Aggregate Percentage: 92%
+                         <br>
+                        Completed: March [Year, e.g., 2022]
+                    </div>
+                 </li>
+            </ul>
+        </section>
+
+        <section id="contact" class="section-hidden">
+            <h2>Connect_Transmission_</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px auto; font-weight: 400;">
+                I am actively seeking challenging internship opportunities and collaborative projects where I can contribute my skills in Information Science, full-stack development, and creative technology. Let's build something extraordinary.
+            </p>
+            <div class="contact-links">
+                <a href="https://github.com/yourusername" target="_blank">GitHub Profile</a>
+                <a href="https://www.linkedin.com/in/yourprofile" target="_blank">LinkedIn Network</a>
+                <a href="mailto:mahesh.k.portfolio@example.com">Send Email</a>
+            </div>
+        </section>
+
+    </div> <!-- End #content -->
+
+    <footer>
+        <p>© <span id="current-year"></span> Mahesh K. Forging the Future, One Line of Code at a Time.</p>
+    </footer>
+
+    <script>
+        // For project link hover effects that need RGB
+        document.documentElement.style.setProperty('--accent-color-rgb', '0, 240, 255');
+
+
+        // --- THREE.JS BACKGROUND EFFECT ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 2000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#bg'),
+            antialias: true,
+            alpha: true // Make canvas transparent to show body background if needed
+        });
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.set(0, 0, 7); // Start slightly further back, centered
+
+        // Optional: Set a subtle background color for the renderer that matches CSS
+        // renderer.setClearColor(0x05080D, 1); // Match body background
+
+        // --- Enhanced Particle System ---
+        const particleCount = 12000; // More particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = [];
+        const colors = [];
+        const sizes = []; // For individual particle sizes
+
+        const colorPrimary = new THREE.Color(getComputedStyle(document.body).getPropertyValue('--accent-color').trim());
+        const colorSecondary = new THREE.Color(getComputedStyle(document.body).getPropertyValue('--secondary-accent-color').trim());
+        const colorTertiary = new THREE.Color(getComputedStyle(document.body).getPropertyValue('--tertiary-accent-color').trim()); // Neon Pink
+        const baseParticleColor = new THREE.Color(0x607090); // Muted blue-gray
+
+        for (let i = 0; i < particleCount; i++) {
+            const x = (Math.random() - 0.5) * 350;
+            const y = (Math.random() - 0.5) * 350;
+            const z = (Math.random() - 0.5) * 350;
+            positions.push(x, y, z);
+
+            const randomValue = Math.random();
+            let particleColor = new THREE.Color();
+            if (randomValue < 0.05) particleColor.copy(colorPrimary);       // 5% primary
+            else if (randomValue < 0.10) particleColor.copy(colorSecondary); // 5% secondary
+            else if (randomValue < 0.12) particleColor.copy(colorTertiary);  // 2% tertiary (rarer highlight)
+            else particleColor.copy(baseParticleColor).lerp(new THREE.Color(0xffffff), Math.random() * 0.1); // Mostly base, some lighter variation
+
+            colors.push(particleColor.r, particleColor.g, particleColor.b);
+            sizes.push(Math.random() * 1.5 + 0.5); // Random sizes between 0.5 and 2.0 (relative to material.size)
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        particlesGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        particlesGeometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 0.15, // Base size, will be multiplied by attribute
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.75,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false, // Important for correct blending of transparent particles
+            sizeAttenuation: true // Particles further away appear smaller
+        });
+
+        const particleSystem = new THREE.Points(particlesGeometry, particleMaterial);
+        scene.add(particleSystem);
+
+        // --- Mouse Interaction Data ---
+        let mouseX = 0, mouseY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
+        // --- Animation Loop ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            const elapsedTime = clock.getElapsedTime();
+
+            // Particle system animation
+            particleSystem.rotation.y += delta * 0.03; // Slow overall rotation
+            particleSystem.rotation.x += delta * 0.01;
+
+            // Individual particle movement (subtle oscillation)
+            const positionsAttribute = particleSystem.geometry.attributes.position;
+            for (let i = 0; i < positionsAttribute.count; i++) {
+                // Add a very subtle sine wave movement to y-position
+                // Base y stored in a separate array or calculated if needed, here simplified
+                // positionsAttribute.setY(i, positionsAttribute.getY(i) + Math.sin(elapsedTime * 0.5 + i * 0.1) * 0.001);
+            }
+            // positionsAttribute.needsUpdate = true; // If modifying positions
+
+            // Camera movement based on mouse
+            camera.position.x += ( (mouseX * 0.0005) - camera.position.x ) * 0.05;
+            camera.position.y += ( (-mouseY * 0.0005) - camera.position.y ) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- Handle Window Resize ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        // --- SECTION SCROLL ANIMATIONS ---
+        const sections = document.querySelectorAll('.section-hidden');
+         sections.forEach(section => section.classList.add('section-hidden')); // Ensure hidden initially
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('section-visible');
+                    entry.target.classList.remove('section-hidden');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
+
+        sections.forEach(section => {
+            if (section.id !== 'hero') observer.observe(section);
+        });
+         const heroSection = document.querySelector('#hero');
+         setTimeout(() => {
+             heroSection.classList.add('section-visible');
+             heroSection.classList.remove('section-hidden');
+         }, 100); // Shorter delay for hero
+
+
+        // --- CUSTOM MOUSE CURSOR (Dot & Outline) ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', e => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with a slight delay using requestAnimationFrame for smoothness
+            requestAnimationFrame(() => {
+                cursorOutline.style.left = `${posX}px`;
+                cursorOutline.style.top = `${posY}px`;
+            });
+        });
+        document.body.addEventListener('mouseleave', () => {
+             cursorDot.style.opacity = 0; cursorOutline.style.opacity = 0;
+        });
+         document.body.addEventListener('mouseenter', () => {
+             cursorDot.style.opacity = 1; cursorOutline.style.opacity = 1;
+        });
+
+
+        // --- Update Footer Year ---
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    </script>
+</body>
+</html>
